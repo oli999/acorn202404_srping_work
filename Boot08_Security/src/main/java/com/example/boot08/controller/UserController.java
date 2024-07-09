@@ -3,9 +3,30 @@ package com.example.boot08.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class UserController {
+	
+	//권한 부족시 or 403 인 경우 
+	@RequestMapping("/user/denied")  //GET, POST 등 모두 가능
+	public String userDenied() {
+		return "user/denied";
+	}
+	
+	//ROLL_STAFF , ROLL_ADMIN 만 요청 가능
+	@GetMapping("/staff/user/list")
+	public String userList() {
+		
+		return "user/list";
+	}
+	//ROLL_ADMIN 만 요청 가능
+	@GetMapping("/admin/user/manage")
+	public String userManage() {
+		
+		return "user/manage";
+	}
+	
 	
 	@GetMapping("/user/loginform")
 	public String loginform() {
