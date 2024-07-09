@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserController {
 	
+	//세션 허용갯수 초과시 
+	@GetMapping("/user/expired")
+	public String userExpired() {
+		return "user/expired";
+	}	
+	
 	//권한 부족시 or 403 인 경우 
 	@RequestMapping("/user/denied")  //GET, POST 등 모두 가능
 	public String userDenied() {

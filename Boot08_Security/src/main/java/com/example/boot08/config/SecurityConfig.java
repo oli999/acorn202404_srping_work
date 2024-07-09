@@ -21,7 +21,7 @@ public class SecurityConfig {
 	 */
 	@Bean //메소드에서 리턴되는 SecurityFilterChain 을 bean 으로 만들어준다.
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-		String[] whiteList= {"/", "/play", "/user/loginform", "/user/login_fail"};
+		String[] whiteList= {"/", "/play", "/user/loginform", "/user/login_fail", "/user/expired"};
 		
 		httpSecurity
 		.csrf(csrf->csrf.disable())
@@ -54,6 +54,11 @@ public class SecurityConfig {
 		.exceptionHandling(config ->
 			//403 forbidden 인 경우 forward 이동 시킬 경로 설정 
 			config.accessDeniedPage("/user/denied")
+		)
+		.sessionManagement(config -> 
+			config
+				.maximumSessions(1) //최대 허용 세션 갯수
+				.expiredUrl("/user/expired") //허용 세션 갯수가 넘어서 로그인 해제된 경우 리다일렉트 이동시킬 경로
 		);
 		
 		return httpSecurity.build();
