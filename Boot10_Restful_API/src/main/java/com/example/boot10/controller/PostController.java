@@ -60,9 +60,13 @@ public class PostController {
 	}
 	
 	@DeleteMapping("/posts/{id}")
-	public String delete(@PathVariable("id") int id) {
-		dao.delete(id);	
-		return "{}";
+	public PostDto delete(@PathVariable("id") int id) {
+		//삭제하기 전에 삭제할 글정보를 미리 담아 두고 
+		PostDto dto=dao.getData(id);
+		//DB 에서 삭제 
+		dao.delete(id);
+		//삭제된 글정보를 리턴 
+		return dto;
 	}
 	
 	@PutMapping("/posts/{id}")
