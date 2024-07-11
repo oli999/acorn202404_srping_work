@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.boot10.dao.PostDao;
 import com.example.boot10.dto.PostDto;
+import com.example.boot10.service.PostService;
 
 @RestController // @ResponseBody 의 기능이 모든 메소드에 포함된다.
 public class PostController {
-	//dao 객체를 주입 받아서 
-	@Autowired 
-	private PostDao dao;
+	//필요한 서비스 객체를 interface type 으로 DI 받는다 
+	@Autowired private PostService service;
 	
 	@GetMapping("/posts")
 	public List<PostDto> getList(){
-		//글 전테 목록을 dao 객체를 이용해서 읽어온다음 
-		List<PostDto> list=dao.getList();
+		//글 전체 목록을 서비스 객체를 이용해서 얻어온다음
+		List<PostDto> list=service.getAll();
 		//리턴해준다 
 		return list;
 	}
@@ -44,37 +44,28 @@ public class PostController {
 	//위의 요청 파라미터 추출을 좀더 편한 방법으로 하면 아래와 같다
 	@PostMapping("/posts")
 	public PostDto insert(PostDto dto) { // title 과 author 가 추출되어서 PostDto 객체에 담긴체로 전달된다.
-		//글번호를 미리 얻어낸다
-		int id=dao.getSequence();
-		//dto 에 글번호를 담는다
-		dto.setId(id);
-		//DB 에 저장한다 
-		dao.insert(dto);
-		return dto;
+		//서비스를 이용해서 글을 저장하고 리턴해주는 PostDto 를 컨트롤러에서 리턴해준다. 
+		return service.addContent(dto);
 	}
 	
 	@GetMapping("/posts/{id}")
 	public PostDto getData(@PathVariable("id") int id) {
-		
-		return dao.getData(id);
+		//서비스를 이용해서 글하나의 정보를 얻어와서 리턴해 준다. 
+		return service.getContent(id);
 	}
 	
 	@DeleteMapping("/posts/{id}")
 	public PostDto delete(@PathVariable("id") int id) {
-		//삭제하기 전에 삭제할 글정보를 미리 담아 두고 
-		PostDto dto=dao.getData(id);
-		//DB 에서 삭제 
-		dao.delete(id);
-		//삭제된 글정보를 리턴 
-		return dto;
+		//서비스를 이용해서 글을 삭제하고 리턴되는 글정보를 리턴한다. 
+		return service.removeContent(id);
 	}
 	
 	@PutMapping("/posts/{id}")
 	public PostDto update(@PathVariable("id") int id, PostDto dto) {
 		//PostDto 에 경로 변수로 넘어오는 수정할 글번호도 담아서 
 		dto.setId(id);
-		//수정 반영하고 
-		dao.update(dto);
+		//서비스를 이용해서 수정한다
+		service.updateContent(dto);
 		//수정된 데이터를 리턴해준다 
 		return dto;
 	}
