@@ -44,6 +44,17 @@ public class UserDaoImpl implements UserDao{
 		session.update("user.updatePwd", dto);
 	}
 
+	@Override
+	public void update(UserDto dto) {
+		/*
+		 *  mapper's namespace => user
+		 *  sql's id => update
+		 *  parameterType => UserDto
+		 *  resultType => select 가 아니기 때문에 없다 
+		 */
+		session.update("user.update" , dto);
+	}
+
 }
 
 
