@@ -42,7 +42,26 @@ public class ExceptionController {
 		// /user/pwd_updateform 로 요청을 다시 하라고 리다일렉트 응답하기 
 		return "redirect:/user/pwd_updateform";
 	}
+	
+	@ExceptionHandler(NotOwnerException.class)
+	public String notOwner(NotOwnerException noe, Model model) {
+		// "exception" 이라는 키값으로 예외 객체를 담는다. 
+		model.addAttribute("exception", noe);
+		
+		//view 페이지에서 에러 정보를 응답한다.
+		return "error/info";
+	}
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
