@@ -9,5 +9,5 @@ public interface FileDao {
 	public FileDto getData(int num); //파일하나의 정보 리턴하기
 	public void delete(int num); //파일 하나의 정보 삭제하기
 	public List<FileDto> getList(FileDto dto); //pageNum 에 해당하는 파일 목록 리턴하기 
-	public int getCount(); //전체 글의 갯수를 리턴하는 메소드
+	public int getCount(FileDto dto); //검색조건에 맞는 글의 갯수를 리턴하는 메소드
 }

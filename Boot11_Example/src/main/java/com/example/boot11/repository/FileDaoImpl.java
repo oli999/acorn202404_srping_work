@@ -51,9 +51,9 @@ public class FileDaoImpl implements FileDao{
 	}
 
 	@Override
-	public int getCount() {
-		
-		return session.selectOne("file.getCount");
+	public int getCount(FileDto dto) {
+		// dto 에 condition 과 keyword 는 null 일수도 있고 아닐수도 있다.
+		return session.selectOne("file.getCount", dto);
 	}
 
 }

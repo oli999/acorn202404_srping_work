@@ -50,7 +50,7 @@ public class FileServiceImpl implements FileService{
 		//하단 끝 페이지 번호
 		int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
 		//전체 글의 갯수
-		int totalRow=dao.getCount();
+		int totalRow=dao.getCount(dto);
 		//전체 페이지의 갯수 구하기
 		int totalPageCount=(int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
 		//끝 페이지 번호가 이미 전체 페이지 갯수보다 크게 계산되었다면 잘못된 값이다.
@@ -70,6 +70,9 @@ public class FileServiceImpl implements FileService{
 		model.addAttribute("endPageNum", endPageNum);
 		model.addAttribute("totalPageCount", totalPageCount);
 		model.addAttribute("pageNum", pageNum);
+		
+		model.addAttribute("dto", dto); //키워드정보가 들어 있는 dto 를 모델에 담기 
+		model.addAttribute("totalRow", totalRow);
 	}
 
 	@Override

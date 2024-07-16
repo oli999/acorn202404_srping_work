@@ -40,7 +40,10 @@ public class FileController {
 		
 		return "file/upload_form";
 	}
-	
+	/*
+	 *  FileDto 에는 pageNum, condition, keyword 값이 담길수도 있다.
+	 *  (GET 방식 파리미터값이 넘어오면 담긴다)
+	 */
 	@GetMapping("/file/list")
 	public String list(Model model, FileDto dto) {
 		//서비스 객체에 Model 의 참조값을 전달해서 파일 목록이 Model 객체에 담기도록 한다.

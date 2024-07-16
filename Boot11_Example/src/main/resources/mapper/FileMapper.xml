@@ -5,6 +5,20 @@
 		num,writer,title,orgFileName,saveFileName,fileSize,regdate
 	</sql>
 	
+	<sql id="whereCondition">
+		<choose>
+			<when test="condition == 'title_filename'">
+				WHERE title LIKE'%' || #{keyword} || '%' OR orgFileName LIKE '%' || #{keyword} || '%'
+			</when>
+			<when test="condition == 'title'">
+				WHERE title LIKE '%' || #{keyword} || '%'
+			</when>
+			<when test="condition == 'writer'">
+				WHERE writer LIKE '%' || #{keyword} || '%'
+			</when>
+		</choose>
+	</sql>
+	
 	<insert id="insert" parameterType="fileDto">
 		INSERT INTO board_file
 		( <include refid="column"/> )
@@ -28,16 +42,29 @@
 			FROM
 				(SELECT <include refid="column"/>
 				FROM board_file
+				<include refid="whereCondition"/>
 				ORDER BY num DESC) result1)
 		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}
 	</select>
 	
-	<select id="getCount" resultType="int">
+	<select id="getCount" parameterType="fileDto" resultType="int">
 		SELECT NVL(MAX(ROWNUM), 0)
 		FROM board_file
+		<include refid="whereCondition"/>
 	</select>
 	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
