@@ -35,17 +35,25 @@ public class FileDaoImpl implements FileDao{
 	}
 
 	@Override
-	public List<FileDto> getList() {
+	public List<FileDto> getList(FileDto dto) {
 		/*
-		 *  parameterType : 없다
+		 *  parameterType : FileDto
 		 *  resultType : FileDto 
 		 *  
 		 *  selectList() 메소드는 무조건 List type 을 리턴하고 
 		 *  List 의 Generic type 은  mapper xml 에서 설정한 resultType 과 같다 
+		 *  
+		 *  FileDto 에는 보여줄 page 에 해당하는 startRowNum 과 endRowNum 이 들어 있다. 
 		 */
-		List<FileDto> list=session.selectList("file.getList");
+		List<FileDto> list=session.selectList("file.getList", dto);
 		
 		return list;
+	}
+
+	@Override
+	public int getCount() {
+		
+		return session.selectOne("file.getCount");
 	}
 
 }

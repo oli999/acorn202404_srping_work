@@ -25,6 +25,7 @@ public class FileDto {
 	private long fileSize;
 	private String regdate;
 	//페이징 처리를 위한 필드
+	private int pageNum=1; //페이지 번호 기본값은 1을 가지도록 한다  
 	private int startRowNum;
 	private int endRowNum;
 	//파일 업로드 처리를 하기 위한 필드

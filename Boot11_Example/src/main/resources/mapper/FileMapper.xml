@@ -20,10 +20,21 @@
 		DELETE FROM board_file
 		WHERE num=#{num}
 	</delete>
-	<select id="getList" resultType="fileDto">
-		SELECT <include refid="column"/>
+	
+	<select id="getList" parameterType="fileDto" resultType="fileDto">
+		SELECT *
+		FROM
+			(SELECT result1.*, ROWNUM AS rnum
+			FROM
+				(SELECT <include refid="column"/>
+				FROM board_file
+				ORDER BY num DESC) result1)
+		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}
+	</select>
+	
+	<select id="getCount" resultType="int">
+		SELECT NVL(MAX(ROWNUM), 0)
 		FROM board_file
-		ORDER BY num DESC
 	</select>
 	
 </mapper>
