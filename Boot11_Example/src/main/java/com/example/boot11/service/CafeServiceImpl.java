@@ -7,8 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import com.example.boot11.dto.CafeCommentDto;
 import com.example.boot11.dto.CafeDto;
 import com.example.boot11.exception.NotOwnerException;
+import com.example.boot11.repository.CafeCommentDao;
 import com.example.boot11.repository.CafeDao;
 
 @Service
@@ -20,6 +22,7 @@ public class CafeServiceImpl implements CafeService{
 		
 	//DI
 	@Autowired private CafeDao cafeDao;
+	@Autowired private CafeCommentDao commentDao;
 	
 	@Override
 	public void getList(Model model, CafeDto dto) {
@@ -116,6 +119,30 @@ public class CafeServiceImpl implements CafeService{
 		}
 		//DB 에서 글 수정하기 
 		cafeDao.update(dto);
+	}
+
+	@Override
+	public void saveComment(CafeCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteComment(int num) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateComment(CafeCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getCommentList(Model model, CafeCommentDto dto) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
