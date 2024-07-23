@@ -1,10 +1,14 @@
 package com.example.boot11.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.boot11.dto.CafeCommentDto;
 import com.example.boot11.dto.CafeDto;
@@ -12,8 +16,51 @@ import com.example.boot11.service.CafeService;
 
 @Controller
 public class CafeController {
-	
+		
 	@Autowired private CafeService service;
+	
+	@GetMapping("/cafe/comment_list")
+	public String commentList(Model model, CafeCommentDto dto ) {
+		//CafeCommentDto 에는 pageNum, ref_group 이 들어 있다 (GET 방식 파라미터)
+		service.getCommentList(model, dto);
+		
+		try {
+			//테스트를 위해 임의로 스레드를 3초 정도 지연 시키기 
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		// templates/cafe/comment_list.html 에서  댓글이 들어 있는 여러개의 li 를 응답할 예정
+		return "cafe/comment_list";
+	}
+	
+	
+	
+	@ResponseBody
+	@PostMapping("/cafe/comment_update")
+	public Map<String, Object> commentUpdate(CafeCommentDto dto){
+		service.updateComment(dto);
+		//수정된 글의 정보를 json 으로 응답
+		Map<String, Object> map=new HashMap<>();
+		map.put("isSuccess", true);
+		map.put("num", dto.getNum());
+		map.put("content", dto.getContent());
+		return map;
+	}
+	
+	@ResponseBody // Map 객체를 리턴하면 json 문자열이 응답되도록 @ResponseBody 어노테이션을 추가로 붙여준다.
+	@GetMapping("/cafe/comment_delete")
+	public Map<String, Object> commentDelete(int num){
+		//num 은 GET 방식 파라미터로 전달되는 삭제할 댓글의 번호
+		service.deleteComment(num);
+		
+		Map<String, Object> map=new HashMap<>();
+		map.put("isSuccess", true);
+		return map;
+	}
+	
+	
 	/*
 	 *  CafeCommentDto 에는 ref_group, target_id, content 3개의 정보가 들어 있다. 
 	 *  
