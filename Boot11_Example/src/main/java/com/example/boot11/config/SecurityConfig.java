@@ -24,7 +24,7 @@ public class SecurityConfig {
 		String[] whiteList= {"/", "/user/loginform", "/user/login_fail", "/user/expired",
 				"/user/signup_form", "/user/signup", "/error", "/upload/images/*",
 				"/file/list", "/file/download", "/cafe/list", "/cafe/detail", "/editor/images/*",
-				"/cafe/comment_list"};
+				"/cafe/comment_list", "/gallery/list", "/gallery/detail"};
 		
 		httpSecurity
 		.headers(header->
