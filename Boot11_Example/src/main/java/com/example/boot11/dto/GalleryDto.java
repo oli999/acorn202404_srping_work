@@ -21,10 +21,22 @@ public class GalleryDto {
 	private String regdate;
 	private int startRowNum;
 	private int endRowNum;
-	private MultipartFile image;	//이미지 파일 업로드 처리를 위한 필드
+	/*
+	 *  <input type="file"  name="images"  multiple>  
+	 *  이기 때문에 Multipart 배열 type 으로 필드를 선언하고 필드명도 images 로 바꿔준다.
+	 */
+	private MultipartFile[] images;	//이미지 파일 업로드 처리를 위한 필드
 	private int prevNum; //이전글의 글번호와
 	private int nextNum; //다음글의 글번호를 담을 필드 추가
 }
+
+
+
+
+
+
+
+
 
 
 
