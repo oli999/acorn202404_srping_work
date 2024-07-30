@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.boot12.dto.UserDto;
+import com.example.boot12.repository.UserDao;
+
 
 
 
@@ -20,14 +23,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
 	
-	//@Autowired private UserDao dao;
+	@Autowired private UserDao dao;
 	
 	//Spring Security 가 로그인 처리시 호출하는 메소드 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		//원래는 DB 에서 정보를 가져와야 하지만 테스트용도
-		if(!username.equals("kimgura")) {
+		//1. form 에 입력한 userName 을 이용해서 사용자의 자세한 정보를 얻어온다.
+		UserDto dto=dao.getData(username);
+		//만일 저장된 userName 이 없다면 
+		if(dto==null) {
 			//예외를 발생시킨다
 			throw new UsernameNotFoundException("존재하지 않는 사용자 입니다");
 		}

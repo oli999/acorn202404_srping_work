@@ -14,6 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.savedrequest.CookieRequestCache;
 
 import com.example.boot12.filter.JwtFilter;
+import com.example.boot12.handler.AuthFailHandler;
+import com.example.boot12.handler.AuthSuccessHandler;
 
 import jakarta.servlet.http.Cookie;
 
@@ -28,7 +30,8 @@ public class SecurityConfig {
 	private JwtFilter jwtFilter;
 	
 	@Bean //메소드에서 리턴되는 SecurityFilterChain 을 bean 으로 만들어준다.
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, 
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+			AuthSuccessHandler successHandler, AuthFailHandler failHandler, 
 			CookieRequestCache cookCache) throws Exception{
 		//화이트 리스트를 미리 배열에 넣어두기
 		String[] whiteList= {"/", "/user/signup_form", "/user/signup", 
@@ -58,8 +61,8 @@ public class SecurityConfig {
 				//로그인 처리를 대신 하려면 어떤 파라미터명으로 username 과 password 가 넘어오는지 알려주기 
 				.usernameParameter("userName") 
 				.passwordParameter("password")
-				//.successHandler(successHandler)//로그인 성공 핸들러 등록
-				//.failureHandler(failHandler) //로그인 실패 핸들러 등록
+				.successHandler(successHandler)//로그인 성공 핸들러 등록
+				.failureHandler(failHandler) //로그인 실패 핸들러 등록
 				//.failureForwardUrl("/user/login_fail") //로그인 실패시 forward 될 url 설정
 				.permitAll() //위에 명시한 모든 요청경로를 로그인 없이 요청할수 있도록 설정 
 		)
