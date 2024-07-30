@@ -1,9 +1,14 @@
 package com.example.boot12.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.boot12.util.JwtUtil;
 
@@ -23,12 +28,27 @@ public class JwtTestController {
 	@Value("${jwt.cookie.expiration}")
 	private int cookieExpiration;
 	
+	@ResponseBody
+	@GetMapping("/api/names")  //토큰이 있어야지만 요청이 가능하다!
+	public List<String> names(){
+		
+		return Arrays.asList("김구라", "해골", "원숭이");
+	}
+	
+	@ResponseBody
+	@PostMapping("/api/test/login")
+	public String apiLogin() {
+		//토큰을 발급해서 쿠키로 
+		String jwtToken=jwtUtil.generateToken("kimgura");
+		return "Bearer+"+jwtToken;
+	}
+	
 	@GetMapping("/test/login")
 	public String login(HttpServletResponse response) {
 		//토큰을 발급해서 쿠키로 
 		String jwtToken=jwtUtil.generateToken("kimgura");
-		// JWT를 쿠키에 담아 응답
-        Cookie cookie = new Cookie(jwtName, jwtToken);
+		// JWT를 쿠키에 담아 응답( 관례상 jwt 토큰은 앞에 Bearer 라는 접두어를 붙인다 )
+        Cookie cookie = new Cookie(jwtName, "Bearer+"+jwtToken);
         cookie.setMaxAge(cookieExpiration); // 쿠키 유지 시간 초 단위로 설정
         cookie.setHttpOnly(true); //웹브라우저에서 JavaScript에서 접근 불가 하도록 설정 
         cookie.setPath("/"); // 모든 경로에서 쿠키를 사용할수 있도록 설정 

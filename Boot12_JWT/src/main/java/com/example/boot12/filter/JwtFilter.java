@@ -42,17 +42,31 @@ public class JwtFilter extends OncePerRequestFilter{
         
         String jwtToken = "";
         if (cookies != null) {
+        	//반복문 돌면서 
             for (Cookie cookie : cookies) {
+            	// custum.properties 파일에 설정된  "jwtToken" 이라는 쿠키이름으로 저장된 value 가 있는지 확인해서
                 if (jwtName.equals(cookie.getName())) {
+                	//있다면 그 value 값을 지역변수에 담기 
                     jwtToken = cookie.getValue();
                     break;
                 }
             }
         }
+        //만일 쿠키에서 추출된 토큰이 없다면 
+        if(jwtToken.equals("")) {
+        	//Header 정보에서 얻어내기
+        	String authHeader=request.getHeader("Authorization");
+        	if(authHeader != null) {
+        		jwtToken = authHeader;
+        	}
+        	
+        }
         
 		//2. 토큰에서 userName 을 얻어내서
 		String userName = null;
-		if(jwtToken != "") {
+		if(jwtToken.startsWith("Bearer+")) {
+			//앞에 "Bearer+" 를 제외한 순수 토큰 문자열 얻어내기 
+			jwtToken=jwtToken.substring(7);
 			userName = jwtUtil.extractUsername(jwtToken);
 		}
 		//userName 이 존재하고  Spring Security 에서 아직 인증을 받지 않은 상태라면 
