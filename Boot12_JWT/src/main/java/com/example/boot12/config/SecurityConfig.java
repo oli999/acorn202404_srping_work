@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -62,8 +65,8 @@ public class SecurityConfig {
 				.usernameParameter("userName") 
 				.passwordParameter("password")
 				.successHandler(successHandler)//로그인 성공 핸들러 등록
-				.failureHandler(failHandler) //로그인 실패 핸들러 등록
-				//.failureForwardUrl("/user/login_fail") //로그인 실패시 forward 될 url 설정
+				//.failureHandler(failHandler) //로그인 실패 핸들러 등록
+				.failureForwardUrl("/user/login_fail") //로그인 실패시 forward 될 url 설정
 				.permitAll() //위에 명시한 모든 요청경로를 로그인 없이 요청할수 있도록 설정 
 		)
 		.logout(config ->
@@ -96,10 +99,10 @@ public class SecurityConfig {
 	
 	//비밀번호를 암호화 해주는 객체를 bean 으로 만든다.
 	@Bean
-	PasswordEncoder passwordEncoder() { 
+	BCryptPasswordEncoder passwordEncoder() { 
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	//쿠키 케시를 bean 으로 만든다. 
 	@Bean
 	CookieRequestCache getCookieRequestCache() {

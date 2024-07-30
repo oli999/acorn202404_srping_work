@@ -94,6 +94,7 @@ public class UserController {
 	// POST 방식 /user/login 요청후 로그인 성공인경우 forward 이동될 url 
 	@PostMapping("/user/login_success")
 	public String loginSuccess() {
+		
 		return "user/login_success";
 	}
 	

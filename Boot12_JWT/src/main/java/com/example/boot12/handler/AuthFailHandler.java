@@ -31,6 +31,7 @@ public class AuthFailHandler implements AuthenticationFailureHandler{
         } else if (exception instanceof CredentialsExpiredException) {
             errMsg = "비밀번호 유효기간이 만료 되었습니다. 관리자에게 문의하세요.";
         }
+        System.out.println(errMsg);
         //에러 메세지를 담은 후에 
         request.setAttribute("errMsg",  errMsg);
         //로그인 폼으로 forward 이동하면서 에러메세지를 전달해 준다. 

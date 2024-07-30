@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired private UserDao dao;
 	//SecurityConfig 클래스에서 bean 으로 등록된 객체 주입받기 
-	@Autowired private PasswordEncoder encoder;
+	@Autowired private BCryptPasswordEncoder encoder;
 	
 	//업로드된 이미지를 저장할 파일시스템 상의 위치 
 	@Value("${file.location}")

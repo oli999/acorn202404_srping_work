@@ -31,6 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 		
 		//1. form 에 입력한 userName 을 이용해서 사용자의 자세한 정보를 얻어온다.
 		UserDto dto=dao.getData(username);
+		
 		//만일 저장된 userName 이 없다면 
 		if(dto==null) {
 			//예외를 발생시킨다
@@ -42,10 +43,10 @@ public class CustomUserDetailsService implements UserDetailsService{
 		//권한 목록을 List 에 담아서  (지금은 1개 이지만)
 		List<GrantedAuthority> authList=new ArrayList<>();
 		// Authority 는 접두어로 "ROLE_" 가 붙어 있어야 한다. 
-		authList.add(new SimpleGrantedAuthority("ROLE_USER"));
+		authList.add(new SimpleGrantedAuthority("ROLE_"+dto.getRole()));
 		
 		//UserDetails 객체를 생성해서 
-		UserDetails ud=new User(username, "1234", authList);
+		UserDetails ud=new User(dto.getUserName(), dto.getPassword(), authList);
 		//리턴해준다.
 		return ud;
 	}
