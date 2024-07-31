@@ -47,6 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 		
 		//UserDetails 객체를 생성해서 
 		UserDetails ud=new User(dto.getUserName(), dto.getPassword(), authList);
+		
 		//리턴해준다.
 		return ud;
 	}

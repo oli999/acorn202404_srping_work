@@ -52,14 +52,23 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
         cookie.setHttpOnly(true); //웹브라우저에서 JavaScript에서 접근 불가 하도록 설정 
         cookie.setPath("/"); // 모든 경로에서 쿠키를 사용할수 있도록 설정 
         response.addCookie(cookie);
-       
+        
+        /*
+         *  케쉬(저장)된 요청이 있는지 읽어와 본다 ( 원래 요청경로가 있는지 )
+         */
     	SavedRequest cashed=requestCache.getRequest(request, response);
-        if(cashed==null) {       	
+    	//만일 케쉬된 요청이 없으면
+        if(cashed==null) {  
+        	// "/user/login_success" 로 forward 이동해서 응답(주소창에 나타나지 않는다)
         	RequestDispatcher rd=request.getRequestDispatcher("/user/login_success");
         	rd.forward(request, response);
         }else {
+        	//있으면 원래 목적지로 리다일렉트 
         	super.onAuthenticationSuccess(request, response, authentication);
         }
       
     }
 }
+
+
+

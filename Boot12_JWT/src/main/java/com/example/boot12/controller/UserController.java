@@ -80,7 +80,8 @@ public class UserController {
 		return "user/denied";
 	}
 	
-	@GetMapping("/user/loginform")
+	// @GetMapping("/user/loginform") +  @PostMapping("/user/loginform")
+	@RequestMapping("/user/loginform")
 	public String loginform() {
 		// templates/user/loginform.html 페이지로 forward 이동해서 응답 
 		return "user/loginform";

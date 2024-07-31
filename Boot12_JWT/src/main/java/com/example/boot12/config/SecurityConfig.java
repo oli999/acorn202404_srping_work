@@ -65,8 +65,8 @@ public class SecurityConfig {
 				.usernameParameter("userName") 
 				.passwordParameter("password")
 				.successHandler(successHandler)//로그인 성공 핸들러 등록
-				//.failureHandler(failHandler) //로그인 실패 핸들러 등록
-				.failureForwardUrl("/user/login_fail") //로그인 실패시 forward 될 url 설정
+				.failureHandler(failHandler) //로그인 실패 핸들러 등록
+				//.failureForwardUrl("/user/login_fail") //로그인 실패시 forward 될 url 설정
 				.permitAll() //위에 명시한 모든 요청경로를 로그인 없이 요청할수 있도록 설정 
 		)
 		.logout(config ->
