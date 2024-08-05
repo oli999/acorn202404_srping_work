@@ -10,12 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter  // Entity 는 Getter 만 제공한다 (한번 만들어진 객체는 ReadOnly 로 사용되도록)
+@Setter
 @Builder
 @Entity(name="MEMBER_INFO")
 public class Member {

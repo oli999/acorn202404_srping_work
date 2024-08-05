@@ -1,5 +1,7 @@
 package com.example.boot13.repository;
 
+import java.util.Date;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.boot13.entity.Phone;
@@ -12,5 +14,5 @@ import com.example.boot13.entity.Phone;
  *  extends JpaRepository<Entity 클래스, Endity 클래스 안에서 id 역활을 하는 칼럼의 data type >
  */
 public interface PhoneRepository extends JpaRepository<Phone, Long>{
-
+	
 }

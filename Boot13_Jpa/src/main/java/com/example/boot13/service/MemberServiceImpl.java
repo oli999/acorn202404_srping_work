@@ -11,6 +11,8 @@ import com.example.boot13.dto.MemberDto;
 import com.example.boot13.entity.Member;
 import com.example.boot13.repository.MemberRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class MemberServiceImpl implements MemberService{
 	// JpaRepository 를 상속받아서 만든 MemberRepository 주입받기 
@@ -34,7 +36,9 @@ public class MemberServiceImpl implements MemberService{
 		 *  - 메소드 참조 표현식
 		 *  클래스명 :: 메소드명
 		 */
-		List<MemberDto> list=repo.findAll().stream().map(MemberDto::toDto).toList();
+		//List<MemberDto> list=repo.findAll().stream().map(MemberDto::toDto).toList();
+		
+		List<MemberDto> list=repo.findAllByOrderByNumDesc().stream().map(MemberDto::toDto).toList();
 		
 		model.addAttribute("list", list);
 	}
@@ -69,6 +73,39 @@ public class MemberServiceImpl implements MemberService{
 	public void update(MemberDto dto) {
 		// save() 메소드는 insert 와 update 겸용이다
 		repo.save(Member.toEntity(dto));
+	}
+	
+	
+	/*
+	 *  
+	 *  Member m1 = repo.findById(1).get();
+	 *  Member m2 = repo.findById(1).get();
+	 *  
+	 *  m1 과 m2 는 동일한 객체 이다   m1 == m2  는 true 
+	 *  
+	 *  만일 @Transactional 이라는 어노테이션이 서비스 메소드에 붙어 있는 상태에서  
+	 *  해당 메소드 안에서 Entity 를 수정하면 수정된 내용을 DB 에 실제로 반영된다.
+	 *  (참고로 알아 두고 수정할때는 Repository 의 메소드를 이용해서 수정하는 것이 좋다)
+	 *  
+	 *  m1.setName(수정할 이름)
+	 *  m1.setAddr(수정할 주소)
+	 *  
+	 *  를 호출하면 실제로 DB 에도 반영된다. 
+	 *  
+	 *  서비스의 특정 메소드를 하나의 transaction 상에서 실행하려면 @Transactional 이라는 어노테이션을 붙이면 된다.
+	 */
+	
+	@Transactional
+	@Override
+	public void update2(MemberDto dto) {
+		//수정할 회원의 번호를 이용해서 회원 정보 entity 객체 얻어내기 
+		Member m1=repo.findById(dto.getNum()).get();
+		Member m2=repo.findById(dto.getNum()).get();
+		boolean isEqual = m1 == m2;
+		System.out.println("m1 과 m2 같은지 여부:"+isEqual);
+		//setter 메소드를 이용해서 이름과 주소 수정하기 
+		m1.setName(dto.getName());
+		m1.setAddr(dto.getAddr());
 	}
 
 }

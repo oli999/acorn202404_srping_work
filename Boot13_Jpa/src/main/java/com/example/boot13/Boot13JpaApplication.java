@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.example.boot13.dto.PhoneDto;
 import com.example.boot13.entity.Phone;
 import com.example.boot13.repository.PhoneRepository;
 
@@ -55,6 +56,12 @@ public class Boot13JpaApplication {
 		List<Phone> phoneList=phoneRepo.findAll();
 		for(Phone tmp:phoneList) {
 			System.out.println(tmp.getId()+"|"+tmp.getName()+"|"+tmp.getCompany());
+		}
+		
+		List<PhoneDto> list=phoneRepo.findAll().stream().map(PhoneDto::toDto).toList();
+		for(PhoneDto tmp: list) {
+			// PhoneDto 는 @Data 어노테이션이 있어서 객체를 직접 출력해도 구조를 확인할수 있다. 
+			System.out.println(tmp);
 		}
 		
 	}
