@@ -14,15 +14,18 @@ import lombok.NoArgsConstructor;
 public class EmpDeptDto {
 	private int empno;
 	private String ename;
+	private double sal;
 	private int deptno;
 	private String dname;
 	private String loc;
 	
 	public static EmpDeptDto toDto(Emp emp) {
+		//각각의 Emp 객체는 자신이 근무하는 부서의 정보(Dept) 객체를 가지고 있다.
 		
 		return EmpDeptDto.builder()
 				.empno(emp.getEmpno())
 				.ename(emp.getEname())
+				.sal(emp.getSal())
 				.deptno(emp.getDept().getDeptno())
 				.dname(emp.getDept().getDname())
 				.loc(emp.getDept().getLoc())
