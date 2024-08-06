@@ -20,6 +20,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public void getList(Model model) {
+		
 		/*
 		//Entity 가 여러개 들어 있는 List 를 이용해서  List<MemberDto> 를 만들어서 Model 객체에 담아야한다. 
 		List<Member> enList=repo.findAll();	
