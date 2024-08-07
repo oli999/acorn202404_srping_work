@@ -2,6 +2,8 @@ package com.example.boot13.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,6 +16,24 @@ public interface EmpRepository extends JpaRepository<Emp, Integer>{
 	 *  ByEmpnoAsc => 사원번호에 대해서 오름차순
 	 */
 	public List<Emp> findAllByOrderByEmpnoAsc();
+	
+	/*
+	 *	검색 키워드를 반영하는 메소드
+	 *	ename 에 keyword 가 포함된 목록 select
+	 *	
+	 *	EnameContaining => 사원이름에 keyword 가 포함된 
+	 */
+	public List<Emp> findByEnameContaining(String keyword);
+	
+	// EnameContainingOrJobContaining  =>  사원이름 혹은 직책에 keyword 가 포함된 
+	public List<Emp> findByEnameContainingOrJobContaining(String keyword, String keyword2);
+	
+	/*
+	 *  페이징 처리와 검색 키워드를 같이 처리 할수도 있다. 
+	 *  대신 return type 은 List 가 아닌 Page 객체 이다
+	 */
+	
+	public Page<Emp> findByEnameContaining(String keyword, Pageable pageable);
 	
 	/*
 	 *  Java Persistence Query Language (JPQL)

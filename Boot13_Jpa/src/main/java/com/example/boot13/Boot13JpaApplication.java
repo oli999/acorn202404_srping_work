@@ -75,8 +75,8 @@ public class Boot13JpaApplication {
 			// PhoneDto 는 @Data 어노테이션이 있어서 객체를 직접 출력해도 구조를 확인할수 있다. 
 			System.out.println(tmp);
 		}
-		//아래 메소드를 호출 
-		initEmpDept();
+		//아래 메소드를 호출 (oracle DB 를 사용할때는 주석처리, h2 DB 에만 가능 )
+		//initEmpDept();
 	}
 	
 	public void initEmpDept() {
