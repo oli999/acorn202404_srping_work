@@ -7,7 +7,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
-
+ 
 # DB 접속 정보와 파일 업로드 설정
 spring:
   datasource:
