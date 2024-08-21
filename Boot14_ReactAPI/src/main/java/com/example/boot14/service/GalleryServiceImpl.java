@@ -1,10 +1,15 @@
 package com.example.boot14.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.boot14.dto.GalleryDto;
 import com.example.boot14.repository.GalleryDao;
@@ -16,8 +21,11 @@ public class GalleryServiceImpl implements GalleryService{
 	//하단 페이지를 몇개씩 표시할 것인지
 	final int PAGE_DISPLAY_COUNT=5;
 	
-	
 	@Autowired private GalleryDao dao;
+	
+	// custom.properties 파일에 설정된 파일을 저장할 위치 읽어오기
+	@Value("${file.location}")
+	private String fileLocation;
 	
 	@Override
 	public Map<String, Object> selectPage(int pageNum) {
@@ -56,7 +64,34 @@ public class GalleryServiceImpl implements GalleryService{
 		
 		return map;
 	}
-	
+
+	@Override
+	public void addToGallery(GalleryDto dto) {
+		MultipartFile[] images = dto.getImages();
+		//MultipartFile[] 배열의 방의 size 만큼 반복문 돌기
+		for(MultipartFile tmp : images) {
+			//1. 업로드된 파일 저장
+			//저장할 파일의 이름 겹치지 않는 유일한 문자열로 얻어내기
+			String saveFileName=UUID.randomUUID().toString();
+			//저장할 파일의 전체 경로 구성하기 
+			String filePath=fileLocation+File.separator+saveFileName;
+			try {
+				//업로드된 파일을 이동시킬 목적지 File 객체
+				File f=new File(filePath);
+				//MultipartFile 객체의 메소드를 통해서 실제로 이동시키기(전송하기)
+				tmp.transferTo(f);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			//2. 로그인된 사용자(userName) 읽어오기
+			String userName=SecurityContextHolder.getContext().getAuthentication().getName();
+			//3. GalleryDto 에 추가 정보를 담고
+			dto.setSaveFileName(saveFileName);
+			dto.setWriter(userName);
+			//4. DB 에 저장하기
+			dao.insert(dto);
+		}
+	}
 
 }
 
