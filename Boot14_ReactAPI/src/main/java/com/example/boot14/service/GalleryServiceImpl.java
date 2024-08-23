@@ -93,6 +93,17 @@ public class GalleryServiceImpl implements GalleryService{
 		}
 	}
 
+	@Override
+	public GalleryDto selectOne(int num) {
+		
+		return dao.getData(num);
+	}
+
+	@Override
+	public void deleteOne(int num) {
+		dao.delete(num);
+	}
+
 }
 
 
