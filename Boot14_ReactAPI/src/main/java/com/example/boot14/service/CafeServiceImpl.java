@@ -1,5 +1,6 @@
 package com.example.boot14.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,49 @@ import com.example.boot14.repository.CafeDao;
 
 @Service
 public class CafeServiceImpl implements CafeService{
+	//한 페이지에 글을 몇개씩 표시할 것인지
+	final int PAGE_ROW_COUNT=5;
+	//하단 페이지 UI를 몇개씩 표시할 것인지
+	final int PAGE_DISPLAY_COUNT=5;
 	
 	@Autowired private CafeDao cafeDao;
 	@Autowired private CafeCommentDao cafeCommentDao;
 
 	@Override
 	public Map<String, Object> getList(CafeDto dto) {
-		// TODO Auto-generated method stub
-		return null;
+		//CafeDto 로 부터 페이지 번호를 얻어낸다 
+		int pageNum=dto.getPageNum();
+		//보여줄 페이지의 시작 ROWNUM
+		int startRowNum=1+(pageNum-1)*PAGE_ROW_COUNT;
+		//보여줄 페이지의 끝 ROWNUM
+		int endRowNum=pageNum*PAGE_ROW_COUNT;
+		
+		//하단 시작 페이지 번호 
+		int startPageNum = 1 + ((pageNum-1)/PAGE_DISPLAY_COUNT)*PAGE_DISPLAY_COUNT;
+		//하단 끝 페이지 번호
+		int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
+		
+		//전체 글의 갯수
+		int totalRow=cafeDao.getCount(dto);
+		//전체 페이지의 갯수 구하기
+		int totalPageCount=(int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
+		//끝 페이지 번호가 이미 전체 페이지 갯수보다 크게 계산되었다면 잘못된 값이다.
+		if(endPageNum > totalPageCount){
+			endPageNum=totalPageCount; //보정해 준다. 
+		}
+		//위에서 계산된 startRowNum 과 endRowNum 을 dto 담고
+		dto.setStartRowNum(startRowNum);
+		dto.setEndRowNum(endRowNum);
+		//CafeDto 를 인자로 전달해서 글목록 얻어오기
+		List<CafeDto> list=cafeDao.getList(dto);
+		
+		//글목록과 페이징 처리에 관련된 정보를 Map 에 담아서 리턴해 준다. 
+		return Map.of("list", list,
+				"startPageNum", startPageNum,
+				"endPageNum", endPageNum,
+				"totalPageCount", totalPageCount,
+				"pageNum", pageNum,
+				"totalRow", totalRow);
 	}
 
 	@Override
