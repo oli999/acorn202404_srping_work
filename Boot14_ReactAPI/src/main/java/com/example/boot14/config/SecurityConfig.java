@@ -33,7 +33,7 @@ public class SecurityConfig {
 		//화이트 리스트를 미리 배열에 넣어두기
 		String[] whiteList= {"/image/upload","/upload/images/**", "/file/upload", "/file/download",
 				"/image/upload2", "/members/**", "/auth", "/gallery", "/gallery/**", 
-				"/editor_upload","/editor/images/**", "/cafes", "/cafes/**"};
+				"/editor_upload","/editor/images/**", "/cafes", "/cafes/**", "/members"};
 
 		//메소드의 매개변수에 HttpSecurity 의 참조값이 전달되는데 해당 객체를 이용해서 설정을 한다음
 		httpSecurity
