@@ -72,26 +72,29 @@ public class CafeServiceImpl implements CafeService{
 
 	@Override
 	public Map<String, Object> getDetail(CafeDto dto) {
-		// TODO Auto-generated method stub
-		return null;
+		//글번호를 이용해서 글 하나의 정보를 얻어와서 
+		CafeDto resultDto=cafeDao.getDetail(dto);
+		//원래의 검색 조건을 글정보가 들어 있는 결과 dto 에 추가해준다. 
+		resultDto.setCondition(dto.getCondition());
+		resultDto.setKeyword(dto.getKeyword());
+		
+		return Map.of("dto", resultDto);
 	}
 
 	@Override
 	public void deleteContent(int num) {
-		// TODO Auto-generated method stub
-		
+		cafeDao.delete(num);
 	}
 
 	@Override
-	public void getData(Model model, int num) {
-		// TODO Auto-generated method stub
+	public CafeDto getData(int num) {
 		
+		return cafeDao.getData(num);
 	}
 
 	@Override
 	public void updateContent(CafeDto dto) {
-		// TODO Auto-generated method stub
-		
+		cafeDao.update(dto);
 	}
 
 	@Override

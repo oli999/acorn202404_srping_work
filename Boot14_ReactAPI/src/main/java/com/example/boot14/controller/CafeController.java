@@ -4,8 +4,11 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +19,39 @@ import com.example.boot14.service.CafeService;
 public class CafeController {
 	
 	@Autowired private CafeService service;
+	
+	@PutMapping("/cafes/{num}")
+	public Map<String, Object> update(@PathVariable("num") int num, @RequestBody  CafeDto dto){
+		//dto 에 글번호를 담고 
+		dto.setNum(num);
+		//수정 반영하기 
+		service.updateContent(dto);
+		
+		return Map.of("isSuccess", true);
+	}
+	
+	@GetMapping("/cafes/{num}/edit")
+	public CafeDto edit(@PathVariable("num") int num) {
+		
+		return service.getData(num);
+	}
+	
+	@DeleteMapping("/cafes/{num}")
+	public Map<String, Object> delete(@PathVariable("num") int num){
+		//서비스 객체를 이용해서 num 에 해당하는 글을 삭제한다. 
+		service.deleteContent(num);
+		
+		return Map.of("isSuccess", true);
+	}
+	
+	
+	@GetMapping("/cafes/{num}")
+	public Map<String, Object> detail(@PathVariable("num") int num, CafeDto dto){
+		//dto 에 글번호도 같이 담아준다( dto 에는 검색조건과 검색 키워드에 관련된 정보가 들어 있다)
+		dto.setNum(num);
+		
+		return service.getDetail(dto);
+	}
 	
 	@GetMapping("/cafes")
 	public Map<String, Object> list(CafeDto dto){

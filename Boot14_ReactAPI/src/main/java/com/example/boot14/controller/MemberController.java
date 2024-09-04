@@ -24,6 +24,7 @@ public class MemberController {
 	
 	@PutMapping("/members/{num}") //번호는 MemberDto 에 들어 있어서 경로 파라미터값은 따로 필요 없음 
 	public MemberDto update(@RequestBody MemberDto dto) {
+		System.out.println(dto);
 		service.updateMember(dto);
 		return dto;
 	}
@@ -57,6 +58,7 @@ public class MemberController {
 	 */
 	@PostMapping("/members")
 	public MemberDto insert(@RequestBody MemberDto dto) {
+		System.out.println(dto);
 		//서비스가 리턴해주는 MemberDto 에는 추가된 회원의 번호도 들어 있다. 
 		return service.addMember(dto);
 	}
