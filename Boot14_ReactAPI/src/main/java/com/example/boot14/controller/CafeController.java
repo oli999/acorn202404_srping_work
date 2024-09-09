@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.boot14.dto.CafeCommentDto;
 import com.example.boot14.dto.CafeDto;
 import com.example.boot14.service.CafeService;
 
@@ -19,6 +20,13 @@ import com.example.boot14.service.CafeService;
 public class CafeController {
 	
 	@Autowired private CafeService service;
+	
+	@PostMapping("/cafes/{num}/comments")
+	public CafeCommentDto commentInsert(CafeCommentDto dto) {
+		// FormData 를 클라이언트에서 전송했기때문에 @ResponseBody 어노테이션을 필요 없다 
+		
+		return service.saveComment(dto);
+	}
 	
 	@PutMapping("/cafes/{num}")
 	public Map<String, Object> update(@PathVariable("num") int num, @RequestBody  CafeDto dto){
