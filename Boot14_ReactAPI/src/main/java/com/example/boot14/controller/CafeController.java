@@ -23,7 +23,7 @@ public class CafeController {
 	
 	@PostMapping("/cafes/{num}/comments")
 	public CafeCommentDto commentInsert(CafeCommentDto dto) {
-		// FormData 를 클라이언트에서 전송했기때문에 @ResponseBody 어노테이션을 필요 없다 
+		// FormData 를 클라이언트에서 전송했기때문에 @RequestBody 어노테이션을 필요 없다 
 		
 		return service.saveComment(dto);
 	}
