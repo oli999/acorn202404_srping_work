@@ -22,8 +22,9 @@
 	<!-- 글번호를 이용해서 댓글의 자세한 정보를 select 하기 -->
 	<select id="getData" parameterType="int" resultType="cafeCommentDto">
 		SELECT num, writer, content, target_id, ref_group,
-					comment_group, deleted, regdate
+					comment_group, deleted, board_cafe_comment.regdate, profile
 		FROM board_cafe_comment
+		JOIN user_tbl ON board_cafe_comment.writer = user_tbl.userName
 		WHERE num=#{num}
 	</select>
 	<!-- 
