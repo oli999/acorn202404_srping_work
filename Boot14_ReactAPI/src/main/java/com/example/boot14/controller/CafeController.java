@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,38 @@ import com.example.boot14.service.CafeService;
 public class CafeController {
 	
 	@Autowired private CafeService service;
+	
+	@GetMapping("/cafes/{num}/comments")
+	public Map<String, Object> commentList(@PathVariable("num") int ref_group,  int pageNum){
+		//댓글의 ref_group 번호와 pageNum 을 dto 에 담는다.
+		CafeCommentDto dto=new CafeCommentDto();
+		dto.setRef_group(ref_group);
+		dto.setPageNum(pageNum);
+		
+		//로딩애니메이션 테스트를 위해 응답시간을 3초 지연시키기
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return service.getCommentList(dto);
+	}
+	
+	@PatchMapping("/cafes/{num}/comments/{commentNum}")
+	public CafeCommentDto commentUpdate(CafeCommentDto dto) {
+		service.updateComment(dto);
+		return dto;
+	}
+	
+	@DeleteMapping("/cafes/{num}/comments/{commentNum}")
+	public Map<String, Object> commentDelete(@PathVariable("commentNum") int commentNum){
+		//댓글 번호를 이용해서 삭제하기
+		service.deleteComment(commentNum);
+		
+		return Map.of("isSuccess", true);
+	}
 	
 	@PostMapping("/cafes/{num}/comments")
 	public CafeCommentDto commentInsert(CafeCommentDto dto) {

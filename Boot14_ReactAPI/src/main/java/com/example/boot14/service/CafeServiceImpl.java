@@ -149,20 +149,51 @@ public class CafeServiceImpl implements CafeService{
 
 	@Override
 	public Map<String, Object> getCommentList(CafeCommentDto dto) {
-		// TODO Auto-generated method stub
-		return null;
+		//요청된 댓글의 페이지 번호
+		int pageNum=dto.getPageNum();
+		/*
+			[ 댓글 페이징 처리에 관련된 로직 ]
+		*/
+		//한 페이지에 댓글을 몇개씩 표시할 것인지
+		final int PAGE_ROW_COUNT=10;
+	
+		//보여줄 페이지의 시작 ROWNUM
+		int startRowNum=1+(pageNum-1)*PAGE_ROW_COUNT;
+		//보여줄 페이지의 끝 ROWNUM
+		int endRowNum=pageNum*PAGE_ROW_COUNT;
+		//계산된 값을 dto 에 담는다
+		dto.setStartRowNum(startRowNum);
+		dto.setEndRowNum(endRowNum);
+		
+		//pageNum 에 해당하는 댓글 목록 얻어오기
+		List<CafeCommentDto> commentList=cafeCommentDao.getList(dto);
+		//원글의 글번호를 이용해서 댓글 전체의 갯수를 얻어낸다.
+		int totalRow=cafeCommentDao.getCount(dto.getRef_group());
+		//댓글 전체 페이지의 갯수
+		int totalPageCount=(int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
+		
+		//댓글목록과 전체 페이지의 갯수를 Map 에 담아서 리턴한다
+		return Map.of("commentList", commentList, "totalPageCount", totalPageCount);
 	}
 
 	@Override
 	public void deleteComment(int num) {
-		// TODO Auto-generated method stub
-		
+		cafeCommentDao.delete(num);
 	}
 
 	@Override
 	public void updateComment(CafeCommentDto dto) {
-		// TODO Auto-generated method stub
-		
+		cafeCommentDao.update(dto);
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
