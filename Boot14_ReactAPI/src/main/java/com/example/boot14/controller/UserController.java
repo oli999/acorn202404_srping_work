@@ -60,6 +60,12 @@ public class UserController {
 		return Map.of("isSuccess", true);
 	}	
 	
+	@GetMapping("/user")
+	public UserDto getInfo() {
+		
+		return userService.getInfo();
+	}
+	
 }
 
 

@@ -1,6 +1,7 @@
 package com.example.boot14.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,11 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserDto getInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		//개인 정보를 본다는 것은 이미 로그인을 한 상태인데 로그인된 userName 은 어떻게 얻어내지???
+		//Spring Security 의 기능을 통해서 얻어낸다 
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();	
+		
+		return dao.getData(userName);
 	}
 
 	@Override
