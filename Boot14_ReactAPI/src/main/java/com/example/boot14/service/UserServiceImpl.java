@@ -6,11 +6,13 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.boot14.dto.UserDto;
+import com.example.boot14.exception.PasswordException;
 import com.example.boot14.repository.UserDao;
 
 @Service
@@ -74,8 +76,23 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updatePassword(UserDto dto) {
-		// TODO Auto-generated method stub
-		
+		//1. 로그인된 userName 을 얻어낸다.
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		//2. 기존의 비밀번호를 DB 에서 읽어와서 (암호화된 비밀번호)
+		String encodedPwd=dao.getData(userName).getPassword();
+		//3. 입력한(암호화 되지 않은 구비밀번호) 와 일치하는지 비교 해서
+		// .checkpw( 암호화되지않은 비밀번호, 암호화된 비밀번호)
+		boolean isValid = BCrypt.checkpw(dto.getPassword(), encodedPwd);
+		//4. 만일 일치하지 않으면 Exception 을 발생 시킨다.
+		if(!isValid) {
+			throw new PasswordException("기존 비밀 번호가 일치하지 않아요!");
+		}
+		//5. 일치하면 새비밀번호를 암호화해서 dto 에 담은 다음
+		dto.setNewPassword(encoder.encode(dto.getNewPassword()));
+		//6. userName 도 dto 에담고 
+		dto.setUserName(userName);
+		//7. DB 에 비밀번호 수정반영를 한다.
+		dao.updatePwd(dto);
 	}
 	
 	@Override

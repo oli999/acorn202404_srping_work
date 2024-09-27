@@ -75,6 +75,14 @@ public class UserController {
 		return Map.of("isSuccess", true);
 	}
 	
+	@PatchMapping("/user/password")
+	public Map<String, Object> updatePassword(@RequestBody UserDto dto){
+		
+		userService.updatePassword(dto);
+		
+		return Map.of("isSuccess", true);
+	}
+	
 }
 
 
