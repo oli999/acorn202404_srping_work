@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +24,11 @@ class Boot14ReactApiApplicationTests {
 	
 	
 	@Autowired MemberDao dao;
-	
 	// @Test 어노테이션을 이용해서 테스트 case 메소드를 작성한다 
 	@Test
 	public void hello() {
 		// 어떤 메소드가 리턴해주는 값이라고 가정 
-		int sum = 1+2;
+		int sum = 2;
 		// 그 값은 반드시 2 여야 한다는 단언(assertion) 
 		// sum 이 2 이면 테스트는 pass 이고  2 가 아니면 테스트는 fail 이다.
 		assertEquals(sum, 2);

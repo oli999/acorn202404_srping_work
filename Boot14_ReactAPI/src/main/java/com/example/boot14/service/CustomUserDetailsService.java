@@ -51,7 +51,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 		//리턴해준다.
 		return ud;
 	}
-
 }
 
 

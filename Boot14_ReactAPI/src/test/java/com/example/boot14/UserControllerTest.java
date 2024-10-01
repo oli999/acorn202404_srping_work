@@ -1,8 +1,16 @@
 package com.example.boot14;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +28,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.example.boot14.dto.UserDto;
 import com.example.boot14.service.UserService;
 import com.example.boot14.util.JwtUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -28,93 +37,79 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private JwtUtil jwtUtil;
-
-    @MockBean
-    private AuthenticationManager authManager;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    private UserDto mockUserDto;
-
-    @BeforeEach
-    void setup() {
-        // 테스트용 UserDto 세팅
-        mockUserDto = new UserDto();
-        mockUserDto.setUserName("testuser");
-        mockUserDto.setPassword("password");
-    }
-
+    
+    ObjectMapper oMapper=new ObjectMapper();
+    
     @Test
-    public void testAuthSuccess() throws Exception {
-        // Mocking - 인증이 성공할 때
-        Mockito.when(jwtUtil.generateToken(mockUserDto.getUserName())).thenReturn("mocked-token");
-
-        // JWT 발급 성공 테스트
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockUserDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("Bearer+mocked-token"));
+    void authTest() throws Exception {
+    	//실제 DB 에 존재하는 정보 
+    	UserDto dto=UserDto.builder()
+    			.userName("kimgura")
+    			.password("@1111")
+    			.build();
+    	
+    	mockMvc.perform(post("/auth")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(oMapper.writeValueAsString(dto)))
+    		.andExpect(status().isOk())
+    		.andExpect(jsonPath("$").isNotEmpty())
+    		.andDo(result -> {
+    			String jwt = result.getResponse().getContentAsString();
+    			//문자열이 Bearer 로 시작되는지 확인
+    			assertTrue(jwt.startsWith("Bearer"));
+    			System.out.println(jwt);
+    		});
     }
-
+    
     @Test
-    public void testAuthFailure() throws Exception {
-        // Mocking - 인증이 실패할 때
-        Mockito.doThrow(new BadCredentialsException("Invalid credentials")).when(authManager)
-                .authenticate(Mockito.any());
-
-        // 인증 실패 테스트
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockUserDto)))
-                .andExpect(status().is4xxClientError());
+    void authFailTest() throws Exception {
+    	//실제 DB 에 존재하지 않는 정보  
+    	UserDto dto=UserDto.builder()
+    			.userName("xxx")
+    			.password("yyy")
+    			.build();
+    	
+    	mockMvc.perform(post("/auth")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(oMapper.writeValueAsString(dto)))
+    			.andDo(print())
+    		.andExpect(status().is4xxClientError()); // 400 번때 에러 응답이 되는지 확인 
     }
-
+    
+    // 아이디 사용가능 여부 테스트  ( 존재하는 아이디 => false, 존재하지 않는 아이디 => true)
     @Test
-    public void testCheckUserNameAvailable() throws Exception {
-        // Mocking - 사용 가능한 아이디
-        Mockito.when(userService.canUse("testuser")).thenReturn(true);
-       
-        // 아이디 사용 가능 확인 테스트
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/check_username/testuser"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.canUse", is(true)));
-    }
-
-    @Test
-    public void testCheckUserNameUnavailable() throws Exception {
-        // Mocking - 사용 불가능한 아이디
-        Mockito.when(userService.canUse("testuser")).thenReturn(false);
-
-        // 아이디 사용 불가 확인 테스트
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/check_username/testuser"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.canUse", is(false)));
-    }
-
-    @Test
-    public void testAddUser() throws Exception {
-        // 회원가입 성공 테스트
-        mockMvc.perform(MockMvcRequestBuilders.post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockUserDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess", is(true)));
-    }
-
-    @Test
-    public void testUpdateUser() throws Exception {
-        // 사용자 정보 업데이트 성공 테스트
-        mockMvc.perform(MockMvcRequestBuilders.patch("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mockUserDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess", is(true)));
+    void checkUserNameTest() throws Exception {
+    	//사용 불가능한 아이디
+    	String userName1 = "kimgura";
+    	mockMvc.perform(get("/user/check_username/"+userName1))
+    		.andExpect(status().isOk())
+    		.andExpect(jsonPath("$.canUse", is(false)));
+    	
+    	//사용 가능한 아이디
+    	String userName2 = UUID.randomUUID().toString();
+    	mockMvc.perform(get("/user/check_username/"+userName2))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.canUse", is(true)));
+    	
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

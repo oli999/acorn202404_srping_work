@@ -1,7 +1,9 @@
 package com.example.boot14;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.boot14.dto.MemberDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 
 @SpringBootTest
 @Transactional
@@ -51,9 +55,44 @@ public class MemberControllerTest {
 		mockMvc.perform(post("/members")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json))
+				.andDo(print()) //요청의 결과를 콘솔창에 출력 
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.name", is("test_name")))
 				.andExpect(jsonPath("$.addr", is("test_addr")));
+	}
+	
+	@Test
+	void testInsert2() throws Exception {
+		// insert 할 회원 정보
+		MemberDto dto=MemberDto.builder()
+				.name("test_name")
+				.addr("test_addr")
+				.build();
+		String json = oMapper.writeValueAsString(dto);
+		
+		// .andReturn() , .getResponse() 를 호출하면 MockHttpServletResponse 객체를 얻어낼수 있다.
+		MockHttpServletResponse response=mockMvc.perform(post("/members")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
+				.andReturn()
+				.getResponse();
+		//결과로 응답된 정보를 얻어낼수 있다.
+		String contentType = response.getContentType();
+		long length = response.getContentLengthLong();
+		// json 문자열 
+		String body = response.getContentAsString();
+		
+		System.out.println("contentType:"+contentType);
+		System.out.println("length:"+length);
+		System.out.println("body:"+body);
+		
+		//응답된 contentType 이 반드시 "application/json" 이여야 한다면
+		assertEquals(contentType, "application/json");
+		
+		//응답된 json 문자열을 직접 파싱해서 결과를 확인 할수도 있다.
+		// JsonPath dependency 추가 한후에 사용할수 있음
+		assertEquals(JsonPath.read(body, "$.name"), "test_name");
+		assertEquals(JsonPath.read(body, "$.addr"), "test_addr");
 	}
 	
 }
