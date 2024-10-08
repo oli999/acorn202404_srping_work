@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService{
 	public void updateUser(UserDto dto) {
 		MultipartFile image=dto.getImage();
 		//만일 선택한 프로필 이미지가 있다면 
-		if(image.getSize() != 0) {
+		if(image != null) {
 			//파일을 원하는 위치로 이동시켜 놓고 
 			String saveFileName=UUID.randomUUID().toString();
 			//저장할 파일의 전체 경로 구성하기
@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService{
 			//UserDto 에 저장된 이미지의 이름을 넣어준다.
 			dto.setProfile(saveFileName);
 		}
+		
 		//로그인된 userName 도 dto 에 담아준다 
 		String userName=SecurityContextHolder.getContext().getAuthentication().getName();
 		dto.setUserName(userName);

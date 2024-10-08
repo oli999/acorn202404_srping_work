@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,8 +23,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.boot14.dto.UserDto;
 import com.example.boot14.service.UserService;
@@ -37,7 +40,7 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
+    // 객체(dto 등) 에 저장된 내용를 json 문자열로 변경해주는 기능을 가지고 있는 객체 
     ObjectMapper oMapper=new ObjectMapper();
     
     @Test
@@ -92,6 +95,37 @@ public class UserControllerTest {
 		.andExpect(jsonPath("$.canUse", is(true)));
     	
     }
+    
+    //회원 가입 테스트 
+    @Test
+    @Transactional //임시 반영만 하고 테스트후에 자동 rollback 된다.
+    void testAddUser() throws Exception{
+    	//회원가입정보를 UserDto 에 담는다
+    	UserDto dto=UserDto.builder()
+    			.userName("testuser")
+    			.password("testpwd")
+    			.email("testemail@")
+    			.build();
+    	mockMvc.perform(post("/user")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(oMapper.writeValueAsString(dto)))
+    		.andExpect(status().isOk())
+    		.andExpect(jsonPath("$.isSuccess", is(true)));
+    }
+    
+    @Test
+    @Transactional
+    @WithUserDetails("kimgura")
+    void testUpdateUser() throws Exception{
+    	
+    	mockMvc.perform(patch("/user")
+    			.param("userName", "kimgura")
+    			.param("email", "testemail@"))
+    		.andExpect(status().isOk())
+    		.andExpect(jsonPath("$.isSuccess", is(true)));
+    	
+    }
+    
 }
 
 
