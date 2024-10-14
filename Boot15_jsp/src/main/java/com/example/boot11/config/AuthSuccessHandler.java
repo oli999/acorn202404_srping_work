@@ -35,7 +35,7 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
         String userName=authentication.getName();
         System.out.println("로그인된 사용자:"+userName);
 		//로그인된 사용자의 이름을 세션에 담아두기 
-        //타임리프 페이지에서 ${session.userName } 으로 참조할수 있다. 
+        //jsp 페이지에서 ${sessionScope.userName } or ${userName} 으로 참조할수 있다. 
         session.setAttribute("userName", userName);
         
 		//3. 로그인 성공이후 미리 저장된 요청이 있었는지 읽어와서

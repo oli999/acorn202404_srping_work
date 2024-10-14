@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService{
 		
 		//dao 를 이용해서 파일 목록을 얻어온다음
 		List<FileDto> list=dao.getList(dto);
-		//Model 객체에 template 페이지에서 필요한 정보를 담아준다.
+		//Model 객체에 jsp 페이지에서 필요한 정보를 담아준다.
 		model.addAttribute("list", list);
 		model.addAttribute("startPageNum", startPageNum);
 		model.addAttribute("endPageNum", endPageNum);

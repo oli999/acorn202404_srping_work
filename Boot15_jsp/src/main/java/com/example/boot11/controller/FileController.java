@@ -48,7 +48,7 @@ public class FileController {
 	public String list(Model model, FileDto dto) {
 		//서비스 객체에 Model 의 참조값을 전달해서 파일 목록이 Model 객체에 담기도록 한다.
 		service.getList(model, dto);
-		// template 페이지에서 파일 목록 응답하기 
+		// jsp 페이지에서 파일 목록 응답하기 
 		return "file/list";
 	}
 }
