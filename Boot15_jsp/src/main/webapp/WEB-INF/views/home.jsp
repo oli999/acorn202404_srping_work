@@ -11,7 +11,9 @@
 <body>
 	<div class="container">
 		<sec:authorize access="isAuthenticated()">
-			<a href="${pageContext.request.contextPath }/user/info">${userPrincipal.name }</a> 님 로그인중
+			<a href="${pageContext.request.contextPath }/user/info">
+				<sec:authentication property="name"/>
+			</a> 님 로그인중
 			<a href="${pageContext.request.contextPath }/user/logout">로그아웃</a>
 		</sec:authorize>
 		<sec:authorize access="!isAuthenticated()">
