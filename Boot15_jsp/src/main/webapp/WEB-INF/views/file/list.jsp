@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>/views/file/list.jsp</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">        
@@ -25,18 +26,20 @@
             </thead>
             <tbody>    
             	<c:forEach var="tmp" items="${list }">
-            		<td>${tmp.num }</td>
-            		<td>${tmp.writer }</td>
-            		<td>${tmp.title }</td>
-            		<td>
-            			<a href="${pageContext.request.contextPath }/file/download?num=${tmp.num }">${tmp.orgFileName }</a>
-            		</td>
-            		<td>${tmp.regdate }</td>
-            		<td>
-            			<c:if test="${userName eq tmp.writer }">
-            				<a href="${pageContext.request.contextPath }/file/delete?num=${tmp.num }">삭제</a>
-            			</c:if>
-            		</td>
+            		<tr>
+	            		<td>${tmp.num }</td>
+	            		<td>${tmp.writer }</td>
+	            		<td>${tmp.title }</td>
+	            		<td>
+	            			<a href="${pageContext.request.contextPath }/file/download?num=${tmp.num }">${tmp.orgFileName }</a>
+	            		</td>
+	            		<td>${tmp.regdate }</td>
+	            		<td>
+	            			<c:if test="${userName eq tmp.writer }">
+	            				<a href="${pageContext.request.contextPath }/file/delete?num=${tmp.num }">삭제</a>
+	            			</c:if>
+	            		</td>
+	            	</tr>
             	</c:forEach>
             </tbody>
         </table>
@@ -49,7 +52,7 @@
         				</li>
         			</c:if>
         			<c:forEach var="i" begin="${startPageNum }" end="${endPageNum }">
-        				<li class="page-item">
+        				<li class="page-item ${pageNum eq i ? 'active' : '' }">
         					<a class="page-link" href="${pageContext.request.contextPath }/file/list?pageNum=${i }&condition=${dto.condition}&keyword=${dto.keyword}">${i }</a>
         				</li>
         			</c:forEach>
@@ -61,21 +64,30 @@
         		</ul>
         	</c:if>
         </nav>
-    	<!-- 검색폼 -->
-        <form th:action="@{/file/list}" method="get">
+        <form action="${pageContext.request.contextPath }/file/list" method="get">
         	<label for="condition">검색조건</label>
         	<select name="condition" id="condition">
-        		<option th:selected="${dto.condition eq 'title_filename'}" value="title_filename">제목 + 파일명</option>
-        		<option th:selected="${dto.condition eq 'title'}" value="title">제목</option>
-        		<option th:selected="${dto.condition eq 'writer'}" value="writer">작성자</option>
+        		<option value="title_filename" ${dto.condition eq 'title_filename' ? 'selected' : ''}>제목 + 파일명</option>
+        		<option value="title" ${dto.condition eq 'title' ? 'selected' : ''}>제목</option>
+        		<option value="writer" ${dto.condition eq 'writer' ? 'selected' : ''}>작성자</option>
         	</select>
-        	<input th:value="${dto.keyword}" type="text" name="keyword" placeholder="검색어..."/>
+        	<input type="text" name="keyword" placeholder="검색어..." value="${dto.keyword }"/>
         	<button class="btn btn-primary btn-sm" type="submit">검색</button>
-        	<a class="btn btn-success btn-sm" th:href="@{/file/list}">새로고침</a>
+        	<a class="btn btn-success btn-sm" href="${pageContext.request.contextPath }/file/list">새로고침</a>
         </form>
-        <p th:if="${not #strings.isEmpty(dto.keyword)}">
-        	<strong th:text="${totalRow}"></strong> 개의 자료가 검색 되었습니다
-        </p>
+        <%-- 
+        	not empty 는 어떤값이 비어 있지 않은지 여부를 알수 있다.
+        	empty 연산자는 비어 있으면 true 를 얻어낸다.
+        	빈문자열 or null 은 비어 있다고 판정된다. 
+         --%>
+        <c:if test="${not empty dto.keyword }">
+        	<p>
+        		<strong>${totalRow }</strong> 개의 자료가 검색 되었습니다.
+        	</p>
+        </c:if>
     </div>
 </body>
 </html>
+
+
+
